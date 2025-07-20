@@ -3,11 +3,12 @@ import os
 import requests
 from dotenv import load_dotenv
 
+# Load environment variables from .env file (for local testing)
 load_dotenv()
 TOGETHER_API_KEY = os.getenv("TOGETHER_API_KEY")
 
 if not TOGETHER_API_KEY:
-    raise ValueError("TOGETHER_API_KEY not found in .env file")
+    raise ValueError("TOGETHER_API_KEY not found in environment variables")
 
 app = Flask(__name__)
 
@@ -58,5 +59,7 @@ def generate():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+# Proper port binding for Render
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
