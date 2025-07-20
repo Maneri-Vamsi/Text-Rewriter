@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title> Text Rewriter</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>Text Rewriter</h1>
+    <textarea id="inputText" placeholder="Type or paste your text here..."></textarea>
+
+    <div class="tone-buttons">
+      <button type="button" id="professionalBtn" class="tone-button">Professional</button>
+      <button type="button" id="friendlyBtn" class="tone-button">Friendly</button>
+    </div>
+
+    <button class="rewrite-btn" id="rewriteBtn">Rewrite Text</button>
+
+    <div class="loading" id="loading" style="display:none;">⏳ Rewriting...</div>
+
+    <div class="output">
+      <strong>Rewritten Output:</strong>
+      <div class="output-box" id="outputText"></div>
+    </div>
+  </div>
+
+  <script>
+    const inputText = document.getElementById("inputText");
+    const outputText = document.getElementById("outputText");
+    const rewriteBtn = document.getElementById("rewriteBtn");
+    const loading = document.getElementById("loading");
+
+    let selectedTone = "";
+
+    document.getElementById("friendlyBtn").addEventListener("click", () => {
+      selectedTone = "friendly";
+      setSelected("friendlyBtn", "professionalBtn");
+    });
+
+    document.getElementById("professionalBtn").addEventListener("click", () => {
+      selectedTone = "professional";
+      setSelected("professionalBtn", "friendlyBtn");
+    });
+
+    function setSelected(activeId, otherId) {
+      document.getElementById(activeId).classList.add("selected");
+      document.getElementById(otherId).classList.remove("selected");
+    }
+
+    rewriteBtn.addEventListener("click", async () => {
+      const text = inputText.value.trim();
+
+      if (!text) {
+        alert("Please enter text to rewrite.");
+        return;
+      }
+
+      if (!selectedTone) {
+        alert("Please select a tone.");
+        return;
+      }
+
+      loading.style.display = "block";
+      outputText.innerText = "";
+
+      try {
+        const response = await fetch("/generate", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ text, tone: selectedTone })
+        });
+
+        const result = await response.json();
+
+        if (result.error) {
+          outputText.innerText = "❌ Error: " + result.error;
+        } else {
+          outputText.innerText = result.result;
+        }
+      } catch (err) {
+        outputText.innerText = "❌ Unexpected error occurred.";
+      } finally {
+        loading.style.display = "none";
+      }
+    });
+  </script>
+</body>
+</html>
