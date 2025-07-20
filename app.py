@@ -3,7 +3,7 @@ import os
 import requests
 from dotenv import load_dotenv
 
-# Load environment variables from .env file (for local testing)
+# Load .env for local development
 load_dotenv()
 TOGETHER_API_KEY = os.getenv("TOGETHER_API_KEY")
 
@@ -59,7 +59,7 @@ def generate():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# Proper port binding for Render
+# Bind correctly for Render
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
