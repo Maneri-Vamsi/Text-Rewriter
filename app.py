@@ -5,15 +5,15 @@ from dotenv import load_dotenv
 
 # Load .env for local development
 load_dotenv()
-TOGETHER_API_KEY = os.getenv("TOGETHER_API_KEY")
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 
-if not TOGETHER_API_KEY:
-    raise ValueError("TOGETHER_API_KEY not found in environment variables")
+if not OPENROUTER_API_KEY:
+    raise ValueError("OPENROUTER_API_KEY not found in .env file")
 
 app = Flask(__name__)
 
-TOGETHER_API_URL = "https://api.together.xyz/v1/chat/completions"
-MODEL = "mistralai/Mixtral-8x7B-Instruct-v0.1"
+OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
+MODEL = "mistralai/mixtral-8x7b-instruct"
 
 @app.route("/")
 def home():
@@ -34,8 +34,10 @@ def generate():
         prompt = f"Rewrite the following in a {tone} tone:\n\n{text}"
 
         headers = {
-            "Authorization": f"Bearer {TOGETHER_API_KEY}",
-            "Content-Type": "application/json"
+            "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+            "Content-Type": "application/json",
+            "HTTP-Referer": "http://127.0.0.1:5000", # Optional
+            "X-OpenRouter-Title": "AI Text Generator" # Optional
         }
 
         payload = {
@@ -48,10 +50,10 @@ def generate():
             "max_tokens": 300
         }
 
-        response = requests.post(TOGETHER_API_URL, headers=headers, json=payload)
+        response = requests.post(OPENROUTER_API_URL, headers=headers, json=payload)
 
         if response.status_code != 200:
-            return jsonify({"error": f"Together AI API error: {response.text}"}), 500
+            return jsonify({"error": f"OpenRouter API error: {response.text}"}), 500
 
         result = response.json()["choices"][0]["message"]["content"].strip()
         return jsonify({"result": result})
