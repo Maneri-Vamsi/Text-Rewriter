@@ -8,7 +8,7 @@ load_dotenv()
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 
 if not OPENROUTER_API_KEY:
-    raise ValueError("OPENROUTER_API_KEY not found in .env file")
+    raise ValueError("OPENROUTER_API_KEY environment variable not found. Please set it in your environment or .env file.")
 
 app = Flask(__name__)
 
