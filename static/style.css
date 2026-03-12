@@ -5,16 +5,20 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
   margin: 0;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .container {
   background: #1e1e2f;
   padding: 40px;
   border-radius: 20px;
-  width: 520px;
+  width: 100%;
+  max-width: 520px;
   box-shadow: 0 0 25px rgba(0, 128, 255, 0.15);
+  box-sizing: border-box;
 }
 
 h1 {
@@ -104,4 +108,28 @@ textarea {
   font-style: italic;
   font-size: 14px;
   color: #aaa;
+}
+
+/* Responsive adjustments for mobile */
+@media (max-width: 480px) {
+  .container {
+    padding: 25px 20px;
+  }
+  
+  h1 {
+    font-size: 24px;
+  }
+  
+  .tone-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .tone-button {
+    width: 100%;
+  }
+
+  textarea {
+    font-size: 14px;
+  }
 }
